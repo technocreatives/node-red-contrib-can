@@ -6,6 +6,7 @@ module.exports = function(RED) {
         this.canConnection = RED.nodes.getNode(this.can);
         this.message = config.message;
         this.signal = config.signal;
+        this.oneshoot = config.oneshoot;
 
         var node = this;
 
@@ -21,11 +22,18 @@ module.exports = function(RED) {
                 var signal = {name:node.signal,value:msg.payload};
                 node.canConnection.controller.updateCanMessageWithSignal(node.message, signal);
                 node.canConnection.controller.sendCanMessage(node.message);
+
+                if (!node.oneshoot) {
+                    node.canConnection.controller.addRetainedCanMessage(node.message);
+                }
             });
 
             this.on('close', function(done) {
                 node.log('About to deregister '+node.id);
                 if (node.canConnection) {
+                    if (!node.oneshoot) {
+                        node.canConnection.controller.removeRetainedCanMessage(node.message);
+                    }
                     node.canConnection.deregister(node, function() {
                         node.log('Node was '+node.id+' was deregistered.');
                         done();
