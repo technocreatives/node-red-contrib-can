@@ -6,37 +6,28 @@ module.exports = function(RED) {
         this.canConnection = RED.nodes.getNode(this.can);
         this.message = config.message;
         this.signal = config.signal;
+        this.name = config.name;
 
         var node = this;
 
         this.update = function(value) {
             node.send({payload:value});
         };
-        this.connect = function() {
-            if (!node.canConnection.connected) {
-                node.warn('Can is not connected so can not add listener.');
-                return;
-            }
-            node.log('About to add listener for '+node.message+' signal '+node.signal);
-            node.canConnection.addListener(node);
-        };
 
-        if (this.canConnection) {
-            this.log('About to register '+this.name);
-            node.canConnection.register(this);
-
-            this.on('close', function(done) {
-                node.log('About to deregister '+node.id);
-                if (node.canConnection) {
-                    node.canConnection.deregister(node, function() {
-                        node.log('Node was '+node.id+' was deregistered.');
-                        done();
-                    });
-                }
-            });
-        } else {
+        // no can no action
+        if (!this.canConnection) {
             this.error(RED._("can.errors.missing-config"));
+            return;
         }
+
+        node.canConnection.register(this);
+
+        this.on('close', function(done) {
+            node.canConnection.deregister(node, function() {
+                node.log('Node was '+node.id+' was deregistered.');
+                done();
+            });
+        });
     }
     RED.nodes.registerType("can-listen",CanListenNode);
 }

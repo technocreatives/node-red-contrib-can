@@ -38,7 +38,7 @@ module.exports = function(RED) {
                     node.connect();
                 }    
             } else {
-                canNode.connect();
+                node.addListener(canNode);
             }
         };
 
@@ -60,9 +60,8 @@ module.exports = function(RED) {
 
                     // Here we should tell all registered nodes that it's ok to listen
                     node.log('We have '+Object.keys(node.users).length+' to connect');
-                    for (var user in node.users) {
-                        node.log('Trying to connect '+node.users[user]);
-                        node.users[user].connect();
+                    for (var user in node.users) {                    
+                        node.addListener(node.users[user]);
                     }
                 });
                 node.controller.connect();
@@ -74,6 +73,11 @@ module.exports = function(RED) {
                 node.warn('Can not register listener for '+node.controller.socket+' as it is not connected.');
                 return;
             }
+            // only if node is a can-listen node
+            if (canNode.type !== 'can-listen') {
+                return;
+            }
+            node.log('About to add listener for '+canNode.message+' signal '+canNode.signal);
 
             if (node.subscriptions[canNode.message] === undefined) {
                 node.subscriptions[canNode.message] = {};
@@ -100,6 +104,10 @@ module.exports = function(RED) {
         };
 
         this.removeListener = function(canNode) {
+            // only if node is a can-listen node
+            if (canNode.type !== 'can-listen') {
+                return;
+            }
             node.log('Removing '+canNode.id+' as lsitener.');
             delete node.subscriptions[canNode.message][canNode.signal][canNode.id];
         }
