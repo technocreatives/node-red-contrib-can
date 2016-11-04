@@ -1,0 +1,33 @@
+<script type="text/javascript">
+    RED.nodes.registerType('can-config',{
+        category: 'config',
+        defaults: {
+            name: { value: "" },
+            socket: { value: 'vcan0', required: true },
+            bus: { value: "", required: true },
+            dbFile: { value: "", required: true }
+        },
+        label: function() {
+            return this.name || "can";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="can-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-user"></i> Name</label>
+        <input type="text" id="node-config-input-name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-socket"><i class="fa fa-plug"></i> Socket</label>
+        <input type="text" id="node-config-input-socket">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-bus"><i class="fa fa-bus"></i> Bus</label>
+        <input type="text" id="node-config-input-bus">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-dbFile"><i class="fa fa-database"></i> Database</label>
+        <input type="text" id="node-config-input-dbFile">
+    </div>
+</script>
