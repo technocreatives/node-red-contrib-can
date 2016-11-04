@@ -6,6 +6,7 @@
             can: {type:"can-config", required:true},
             message: {value:"", required:true},
             signal: {value:"", required:true},
+            oneshoot: {value:false},
             name: {value:""}
         },
         inputs:1,
@@ -30,6 +31,10 @@
     <div class="form-row">
         <label for="node-input-signal"><i class="fa fa-comment"></i> Signal</label>
         <input type="text" id="node-input-signal">
+    </div>
+    <div class="form-row">
+        <label for="node-input-oneshoot"><i class="icon-tag"></i> Oneshoot</label>
+        <input type="checkbox" id="node-input-oneshoot" style="float: left;">
     </div>
     <div class="form-row">
         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
