@@ -7,42 +7,37 @@ module.exports = function(RED) {
         this.message = config.message;
         this.signal = config.signal;
         this.oneshoot = config.oneshoot;
+        this.name = config.name;
 
         var node = this;
 
-        this.connect = function() {
-            node.log('Do not need to connect can-update node.');
-        };
-
-        if (this.canConnection) {
-            this.log('About to register '+this.name);
-            node.canConnection.register(this);
-
-            this.on('input', function(msg) {
-                var signal = {name:node.signal,value:msg.payload};
-                node.canConnection.controller.updateCanMessageWithSignal(node.message, signal);
-                node.canConnection.controller.sendCanMessage(node.message);
-
-                if (!node.oneshoot) {
-                    node.canConnection.controller.addRetainedCanMessage(node.message);
-                }
-            });
-
-            this.on('close', function(done) {
-                node.log('About to deregister '+node.id);
-                if (node.canConnection) {
-                    if (!node.oneshoot) {
-                        node.canConnection.controller.removeRetainedCanMessage(node.message);
-                    }
-                    node.canConnection.deregister(node, function() {
-                        node.log('Node was '+node.id+' was deregistered.');
-                        done();
-                    });
-                }
-            });
-        } else {
+        // no can no action
+        if (!this.canConnection) {
             this.error(RED._("can.errors.missing-config"));
+            return;
         }
+
+        node.canConnection.register(this);
+
+        this.on('input', function(msg) {
+            var signal = {name:node.signal,value:msg.payload};
+            node.canConnection.controller.updateCanMessageWithSignal(node.message, signal);
+            node.canConnection.controller.sendCanMessage(node.message);
+
+            if (!node.oneshoot) {
+                node.canConnection.controller.addRetainedCanMessage(node.message);
+            }
+        });
+
+        this.on('close', function(done) {
+            if (!node.oneshoot) {
+                node.canConnection.controller.removeRetainedCanMessage(node.message);
+            }
+            node.canConnection.deregister(node, function() {
+                node.log('Node was '+node.id+' was deregistered.');
+                done();
+            });
+        });
     }
     RED.nodes.registerType("can-update",CanUpdateNode);
 }
