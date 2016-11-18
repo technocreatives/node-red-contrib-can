@@ -136,7 +136,7 @@ CanController.prototype = {
 		// can't update can message if no service is created
 		if (!this._isDatabaseServiceCreated())
 			return;
-		var value = parseInt(signal.value);
+		var value = parseFloat(signal.value);
 		self.databaseService.messages[message].signals[signal.name].update(value);
 	},
 
