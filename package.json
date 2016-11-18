@@ -32,7 +32,6 @@
   "dependencies": {
     "socketcan": "2.1.3",
     "lodash": "latest",
-    "hashmap": "latest",
-    "body-parser": "^1.15.1"
+    "hashmap": "latest"
   }
 }

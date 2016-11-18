@@ -1,7 +1,6 @@
 module.exports = function(RED) {
     "use strict";
 
-    var bodyParser = require('body-parser');
     var CanController = require("./can-controller");
     var file = '';
     var socket = '';
