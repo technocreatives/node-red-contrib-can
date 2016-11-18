@@ -1,7 +1,7 @@
 module.exports = function(RED) {
     function CanListenNode(config) {
         RED.nodes.createNode(this,config);
-        
+
         this.can = config.can;
         this.canConnection = RED.nodes.getNode(this.can);
         this.message = config.message;
@@ -10,15 +10,15 @@ module.exports = function(RED) {
 
         var node = this;
 
-        this.update = function(value) {
-            node.send({payload:value});
-        };
-
         // no can no action
         if (!this.canConnection) {
             this.error(RED._("can.errors.missing-config"));
             return;
         }
+
+        this.update = function(value) {
+            node.send({payload:value});
+        };
 
         node.canConnection.register(this);
 
