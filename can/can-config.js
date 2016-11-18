@@ -1,7 +1,6 @@
 module.exports = function(RED) {
     "use strict";
 
-    var bodyParser = require('body-parser');
     var CanController = require("./can-controller");
     var file = '';
     var socket = '';
@@ -22,24 +21,35 @@ module.exports = function(RED) {
         this.connected = false;
         this.connecting = false;
         this.subscriptions = {};
+        this.users = {};
 
         this.controller = new CanController(this.socket, this.bus, this.dbFile, this.refreshRate);
-
-        // Define functions called by CAN in and out nodes
         var node = this;
-        this.users = {};
+        this.controller.on('connect', function(socketName) {
+            node.log('Connected to can port '+socketName);
+            node.connecting = false;
+            node.connected = true;
+
+            // don't continue if we don't have anything to register
+            if (Object.keys(node.users).length === 0) {
+                return;
+            }
+            // Here we should tell all registered nodes that it's ok to listen
+            for (var user in node.users) {                    
+                node.addListener(node.users[user]);
+            }
+        });
+        if (!this.connected && !this.connecting) {
+            this.connecting = true;
+            this.controller.connect();
+        }
 
         this.register = function(canNode) {
             var name = canNode.name === '' ? canNode.id : canNode.name;
             node.log('Registering '+name);
             node.users[canNode.id] = canNode;
-            if (!node.connected) {
-                if (Object.keys(node.users).length === 1) {
-                    node.connect();
-                }    
-            } else {
-                canNode.connect();
-            }
+
+            node.addListener(canNode);
         };
 
         this.deregister = function(canNode,done) {
@@ -50,30 +60,16 @@ module.exports = function(RED) {
             done();
         };
 
-        this.connect = function() {
-        	if (!node.connected && !node.connecting) {
-        		node.connecting = true;
-                node.controller.on('connect', function(socketName) {
-                    node.log('Connected to can port '+socketName);
-                    node.connecting = false;
-                    node.connected = true;
-
-                    // Here we should tell all registered nodes that it's ok to listen
-                    node.log('We have '+Object.keys(node.users).length+' to connect');
-                    for (var user in node.users) {
-                        node.log('Trying to connect '+node.users[user]);
-                        node.users[user].connect();
-                    }
-                });
-                node.controller.connect();
-           }
-        };
-
         this.addListener = function(canNode) {
             if (!node.connected) {
                 node.warn('Can not register listener for '+node.controller.socket+' as it is not connected.');
                 return;
             }
+            // only if node is a can-listen node
+            if (canNode.type !== 'can-listen') {
+                return;
+            }
+            node.log('About to add listener for '+canNode.message+' signal '+canNode.signal);
 
             if (node.subscriptions[canNode.message] === undefined) {
                 node.subscriptions[canNode.message] = {};
@@ -100,6 +96,10 @@ module.exports = function(RED) {
         };
 
         this.removeListener = function(canNode) {
+            // only if node is a can-listen node
+            if (canNode.type !== 'can-listen') {
+                return;
+            }
             node.log('Removing '+canNode.id+' as lsitener.');
             delete node.subscriptions[canNode.message][canNode.signal][canNode.id];
         }
