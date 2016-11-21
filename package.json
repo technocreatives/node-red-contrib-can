@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-can",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Node RED Node interfacing with a CAN network.",
   "main": "index.js",
   "scripts": {
@@ -23,7 +23,7 @@
       "can-config": "can/can-config.js"
     }
   },
-  "author": "magnus@spanggard.se",
+  "author": "magnus@technocreatives.com",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/technocreatives/node-red-contrib-can/issues"

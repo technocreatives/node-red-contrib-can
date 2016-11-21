@@ -71,8 +71,13 @@ module.exports = function(RED) {
             }
             node.log('About to add listener for '+canNode.message+' signal '+canNode.signal);
 
+
+            // No subscribers previously for this message, add empty message
             if (node.subscriptions[canNode.message] === undefined) {
                 node.subscriptions[canNode.message] = {};
+            }
+            // No subscribers for this signal previously, add empty signal
+            if (node.subscriptions[canNode.message][canNode.signal] === undefined) {
                 node.subscriptions[canNode.message][canNode.signal] = {};
             }
 
