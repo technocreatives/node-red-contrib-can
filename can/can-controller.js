@@ -83,18 +83,15 @@ CanController.prototype = {
 		channel.start();
 		this._emitCanConnected(socket);
 	},
-
-	registerListener:function(message, signal) {
+	registerListener:function(message, signal, callback) {
 		var self = this;
-		// no database created, can't register listeners.
 		if (!self._isDatabaseServiceCreated())
 			return;
-
 		self.databaseService.messages[message].signals[signal].onChange(function(sig) {
-  			self._emitCanSignalChanged(message, sig);
+			callback(message, sig);
 		});
 	},
-
+	
 	/**
 	* Will send the data conencted with message out on can.
 	* message - the can message that you want to send

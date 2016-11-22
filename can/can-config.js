@@ -86,14 +86,13 @@ module.exports = function(RED) {
             if (Object.keys(listeners).length === 0) {
             	// register listener
                 node.log('Registering real listener for '+canNode.message+' '+canNode.signal);
-            	node.controller.registerListener(canNode.message, canNode.signal);
-            	node.controller.on('signal', function(message, signal) {
+                node.controller.registerListener(canNode.message, canNode.signal, function(message, signal) {
                     // Go trough all listeners and send them updates
                     for (var childNodeId in node.subscriptions[message][signal.name]) {
                         var child = node.subscriptions[message][signal.name][childNodeId];
                         child.update(signal.value);
                     }
-            	});
+                });
             }
 
             // Add this can node as a listener
