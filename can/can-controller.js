@@ -174,7 +174,34 @@ CanController.prototype = {
 
 		// Remove message from retained messages
 		self.retainedCanMessages.remove(message);
+	},
+    readCurrentSignal:function(message,signal){
+	var self = this;
+
+	var foundValue = null;
+
+	if (!this._isDatabaseServiceCreated()) {
+	    return;
 	}
+	
+	if(self.databaseService.messages[message]){
+
+	    if(signal === undefined || signal === '')
+		foundValue = self.databaseService.messages[message].signals;
+	    
+	    else{
+		
+		if(self.databaseService.messages[message].signals[signal]){
+		    
+		    foundValue = self.databaseService.messages[message].signals[signal].value;
+		}
+		
+	    }
+	}
+	
+	return foundValue;
+	
+    }
 };
 
 module.exports = CanController;

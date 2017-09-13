@@ -1,0 +1,43 @@
+<script type="text/javascript">
+  RED.nodes.registerType('can-read',{
+       category: 'output',
+       color: '#AACF11',
+  defaults: {
+       can: {type:"can-config", required:true},
+       message: {value:""},
+       signal:{value:""},
+       name: {value:""}
+  },
+  inputs:1,
+  outputs:1,
+  icon: "car.png",
+  align: "right",
+  label: function() {
+  return this.name||"can-read";
+  }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="can-read">
+    <div class="form-row">
+        <label for="node-input-can"><i class="fa fa-plug"></i> Can</label>
+        <input type="text" id="node-input-can">
+    </div>
+    <div class="form-row">
+      <label for="node-input-message"><i class="icon-tag"></i> Message</label>
+      <input type="text" id="node-input-message" placeholder="Message">
+    </div>
+    <div class="form-row">
+      <label for="node-input-signal"><i class="icon-tag"></i> Signal</label>
+      <input type="text" id="node-input-signal" placeholder="Signal">
+    </div>
+    <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="can-read">
+  <p>A Node where you select which message from the kayak database that you want to read.</p>
+  <p>The input message payload shall be {message:"name",signal:"signal"}; if not set the message and signal values will be taken from the node configuration </p>
+</script>

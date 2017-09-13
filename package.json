@@ -20,7 +20,8 @@
     "nodes": {
       "can-listen": "can/can-listen.js",
       "can-update": "can/can-update.js",
-      "can-config": "can/can-config.js"
+	"can-config": "can/can-config.js",
+	"can-read": "can/can-read.js"
     }
   },
   "author": "magnus@technocreatives.com",
