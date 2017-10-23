@@ -1,6 +1,6 @@
 module.exports = function(RED) {
     function CanUpdateNode(config) {
-        RED.nodes.createNode(this,config);
+        RED.nodes.createNode(this, config);
 
         this.can = config.can;
         this.canConnection = RED.nodes.getNode(this.can);
@@ -13,14 +13,17 @@ module.exports = function(RED) {
 
         // no can no action
         if (!this.canConnection) {
-            this.error(RED._("can.errors.missing-config"));
+            this.error(RED._('can.errors.missing-config'));
             return;
         }
 
         node.canConnection.register(this);
 
         this.on('input', function(msg) {
-            var signal = {name:node.signal,value:msg.payload};
+            var signal = {
+                name: node.signal,
+                value: msg.payload
+            };
             node.canConnection.controller.updateCanMessageWithSignal(node.message, signal);
             node.canConnection.controller.sendCanMessage(node.message);
 
@@ -34,10 +37,10 @@ module.exports = function(RED) {
                 node.canConnection.controller.removeRetainedCanMessage(node.message);
             }
             node.canConnection.deregister(node, function() {
-                node.log('Node was '+node.id+' was deregistered.');
+                node.log('Node was ' + node.id + ' was deregistered.');
                 done();
             });
         });
     }
-    RED.nodes.registerType("can-update",CanUpdateNode);
-}
+    RED.nodes.registerType('can-update', CanUpdateNode);
+};

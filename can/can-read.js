@@ -1,6 +1,6 @@
 module.exports = function(RED) {
     function CanReadNode(config) {
-        RED.nodes.createNode(this,config);
+        RED.nodes.createNode(this, config);
 
         this.can = config.can;
         this.canConnection = RED.nodes.getNode(this.can);
@@ -13,52 +13,55 @@ module.exports = function(RED) {
 
         // no can no action
         if (!this.canConnection) {
-            this.error(RED._("can.errors.missing-config"));
+            this.error(RED._('can.errors.missing-config'));
             return;
         }
 
-	if(this.message){
+        if (this.message) {
 
-	    this.status({fill:"green",shape:"ring",text:"Ready to query " + this.message});
-	}
+            this.status({
+                fill: 'green',
+                shape: 'ring',
+                text: 'Ready to query ' + this.message
+            });
+        }
 
         node.canConnection.register(this);
 
         this.on('input', function(msg) {
+            var usePayloadConf = msg.payload && msg.payload.message;
+            var actualMessage = usePayloadConf ? msg.payload.message : this.message;
+            var actualSignal = usePayloadConf ? msg.payload.signal : this.signal;
 
+            if (!actualMessage || actualMessage === '' || actualSignal === undefined || actualSignal === '') {
+                this.status({
+                    fill: 'red',
+                    shape: 'ring',
+                    text: 'empty CAN message/signal'
+                });
+                return;
+            }
 
-	    var usePayloadConf = msg.payload && msg.payload.message;
-	    var actualMessage = usePayloadConf ? msg.payload.message : this.message;
-	    var actualSignal = usePayloadConf ? msg.payload.signal : this.signal ;
-	    
-	    if(!actualMessage || actualMessage === "" || actualSignal === undefined || actualSignal === ""){
+            var value = node.canConnection.controller.readCurrentSignal(actualMessage, actualSignal);
 
-		this.status({fill:"red",shape:"ring",text:"empty CAN message/signal"});
+            this.status({
+                fill: 'green',
+                shape: 'ring',
+                text: 'Queried ' + actualMessage + ' - ' + actualSignal
+            });
 
-		return;
-
-	    }
-
-
-	    
-            var value = node.canConnection.controller.readCurrentSignal(actualMessage,actualSignal);
-
-	    	    this.status({fill:"green",shape:"ring",text:"Queried " + actualMessage + " - " + actualSignal});
-	    
-
-
-	    node.send({payload:value});
-
-
+            node.send({
+                payload: value
+            });
         });
 
         this.on('close', function(done) {
 
             node.canConnection.deregister(node, function() {
-                node.log('Node was '+node.id+' was deregistered.');
+                node.log('Node was ' + node.id + ' was deregistered.');
                 done();
             });
         });
     }
-    RED.nodes.registerType("can-read",CanReadNode);
-}
+    RED.nodes.registerType('can-read', CanReadNode);
+};
