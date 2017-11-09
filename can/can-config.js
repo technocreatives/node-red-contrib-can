@@ -1,9 +1,7 @@
 module.exports = function(RED) {
-    "use strict";
+    'use strict';
 
-    var CanController = require("./can-controller");
-    var file = '';
-    var socket = '';
+    var CanController = require('./can-controller');
 
     function CanConfigNode(n) {
         RED.nodes.createNode(this, n);
@@ -12,9 +10,6 @@ module.exports = function(RED) {
         this.socket = n.socket;
         this.bus = n.bus;
         this.dbFile = n.dbFile;
-
-        file = this.dbFile;
-        socket = this.socket;
 
         // Config node state
         this.refreshRate = 20; //ms
@@ -26,7 +21,7 @@ module.exports = function(RED) {
         this.controller = new CanController(this.socket, this.bus, this.dbFile, this.refreshRate);
         var node = this;
         this.controller.on('connect', function(socketName) {
-            node.log('Connected to can port '+socketName);
+            node.log('Connected to can port ' + socketName);
             node.connecting = false;
             node.connected = true;
 
@@ -35,7 +30,7 @@ module.exports = function(RED) {
                 return;
             }
             // Here we should tell all registered nodes that it's ok to listen
-            for (var user in node.users) {                    
+            for (var user in node.users) {
                 node.addListener(node.users[user]);
             }
         });
@@ -46,15 +41,15 @@ module.exports = function(RED) {
 
         this.register = function(canNode) {
             var name = canNode.name === '' ? canNode.id : canNode.name;
-            node.log('Registering '+name);
+            node.log('Registering ' + name);
             node.users[canNode.id] = canNode;
 
             node.addListener(canNode);
         };
 
-        this.deregister = function(canNode,done) {
+        this.deregister = function(canNode, done) {
             var name = canNode.name === '' ? canNode.id : canNode.name;
-            node.log('Deregister '+name);
+            node.log('Deregister ' + name);
             node.removeListener(canNode);
             delete node.users[canNode.id];
             done();
@@ -62,14 +57,14 @@ module.exports = function(RED) {
 
         this.addListener = function(canNode) {
             if (!node.connected) {
-                node.warn('Can not register listener for '+node.controller.socket+' as it is not connected.');
+                node.warn('Can not register listener for ' + node.controller.socket + ' as it is not connected.');
                 return;
             }
             // only if node is a can-listen node
             if (canNode.type !== 'can-listen') {
                 return;
             }
-            node.log('About to add listener for '+canNode.message+' signal '+canNode.signal);
+            node.log('About to add listener for ' + canNode.message + ' signal ' + canNode.signal);
 
 
             // No subscribers previously for this message, add empty message
@@ -84,8 +79,8 @@ module.exports = function(RED) {
             var listeners = node.subscriptions[canNode.message][canNode.signal];
             // if we have no listeners (this is the first), register the listener to the can controller
             if (Object.keys(listeners).length === 0) {
-            	// register listener
-                node.log('Registering real listener for '+canNode.message+' '+canNode.signal);
+                // register listener
+                node.log('Registering real listener for ' + canNode.message + ' ' + canNode.signal);
                 node.controller.registerListener(canNode.message, canNode.signal, function(message, signal) {
                     // Go trough all listeners and send them updates
                     for (var childNodeId in node.subscriptions[message][signal.name]) {
@@ -104,10 +99,16 @@ module.exports = function(RED) {
             if (canNode.type !== 'can-listen') {
                 return;
             }
-            node.log('Removing '+canNode.id+' as lsitener.');
+            node.log('Removing ' + canNode.id + ' as lsitener.');
             delete node.subscriptions[canNode.message][canNode.signal][canNode.id];
-        }
+        };
+
+        this.on('close', function() {
+            if (this.controller != undefined) {
+                this.controller.disconnect();
+            }
+        });
     }
-    
-    RED.nodes.registerType("can-config",CanConfigNode);
+
+    RED.nodes.registerType('can-config', CanConfigNode);
 };

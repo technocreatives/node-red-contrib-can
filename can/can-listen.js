@@ -1,6 +1,6 @@
 module.exports = function(RED) {
     function CanListenNode(config) {
-        RED.nodes.createNode(this,config);
+        RED.nodes.createNode(this, config);
 
         this.can = config.can;
         this.canConnection = RED.nodes.getNode(this.can);
@@ -12,22 +12,24 @@ module.exports = function(RED) {
 
         // no can no action
         if (!this.canConnection) {
-            this.error(RED._("can.errors.missing-config"));
+            this.error(RED._('can.errors.missing-config'));
             return;
         }
 
         this.update = function(value) {
-            node.send({payload:value});
+            node.send({
+                payload: value
+            });
         };
 
         node.canConnection.register(this);
 
         this.on('close', function(done) {
             node.canConnection.deregister(node, function() {
-                node.log('Node was '+node.id+' was deregistered.');
+                node.log('Node was ' + node.id + ' was deregistered.');
                 done();
             });
         });
     }
-    RED.nodes.registerType("can-listen",CanListenNode);
-}
+    RED.nodes.registerType('can-listen', CanListenNode);
+};
