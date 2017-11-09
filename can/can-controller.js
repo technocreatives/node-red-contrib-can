@@ -59,9 +59,9 @@ CanController.prototype = {
         self.emitter.emit('signal', message, signal);
     },
 
-    _emitCanConnected: function(socketName) {
+    _emitCanConnected: function(socketName, error) {
         var self = this;
-        self.emitter.emit('connect', socketName);
+        self.emitter.emit('connect', socketName, error);
     },
 
     _isDatabaseServiceCreated: function() {
@@ -80,6 +80,7 @@ CanController.prototype = {
         try {
             self.channel = can.createRawChannel(socket, false); // False don't add timestamp to messages
         } catch (e) {
+        	this._emitCanConnected(socket, e);
             console.error('error %s when creating channel for socket %s', e.message, socket);
             return;
         }

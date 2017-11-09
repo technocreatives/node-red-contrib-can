@@ -20,7 +20,17 @@ module.exports = function(RED) {
 
         this.controller = new CanController(this.socket, this.bus, this.dbFile, this.refreshRate);
         var node = this;
-        this.controller.on('connect', function(socketName) {
+        this.controller.on('connect', function(socketName, error) {
+
+            if (error) {
+                node.warn('Failed to connect to '+socketName+' because '+error.message);
+                node.log('Retrying connection.');
+                setTimeout(function(){
+                    node.controller.connect();
+                }, 2000);
+                return;
+            }
+
             node.log('Connected to can port ' + socketName);
             node.connecting = false;
             node.connected = true;
@@ -99,7 +109,8 @@ module.exports = function(RED) {
             if (canNode.type !== 'can-listen') {
                 return;
             }
-            node.log('Removing ' + canNode.id + ' as lsitener.');
+            var name = canNode.name === '' ? canNode.id : canNode.name;
+            node.log('Removing ' + name + ' as lsitener.');
             delete node.subscriptions[canNode.message][canNode.signal][canNode.id];
         };
 
