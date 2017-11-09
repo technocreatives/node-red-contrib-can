@@ -26,7 +26,8 @@ module.exports = function(RED) {
 
         this.on('close', function(done) {
             node.canConnection.deregister(node, function() {
-                node.log('Node was ' + node.id + ' was deregistered.');
+                var name = node.name === '' ? node.id : node.name;
+                node.log('Node ' + name+ ' was deregistered.');
                 done();
             });
         });

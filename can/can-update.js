@@ -37,7 +37,8 @@ module.exports = function(RED) {
                 node.canConnection.controller.removeRetainedCanMessage(node.message);
             }
             node.canConnection.deregister(node, function() {
-                node.log('Node was ' + node.id + ' was deregistered.');
+                var name = node.name === '' ? node.id : node.name;
+                node.log('Node ' + name + ' was deregistered.');
                 done();
             });
         });
