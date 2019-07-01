@@ -14,6 +14,8 @@ You will need to have can-utils installed on your machine. Since this package is
 
 The node can be 'enabled' or 'disabled' by sending a 'msg.can' message of 'enable' or 'disable'. This makes it easy to to halt or start can messages while the flow is running or based of external logic.
 
+The node can also be configured to send a CAN message any time there is an update to the node, or only on change.
+
 Tips
 -----
 Since this only works with kayak (kcd) files I would recommend having a look at <a href="https://github.com/ebroecker/canmatrix">canmatrix</a> which is a python tool to convert between different standards.
