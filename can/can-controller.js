@@ -88,13 +88,30 @@ CanController.prototype = {
         self.channel.start();
         this._emitCanConnected(socket);
     },
-    registerListener: function(message, signal, callback) {
+    registerListener: function (message, signal, update, callback) {
         var self = this;
         if (!self._isDatabaseServiceCreated())
             return;
-        self.databaseService.messages[message].signals[signal].onChange(function(sig) {
-            callback(message, sig);
-        });
+        self.databaseService.messages[message].signals[signal].changelisteners = []; //remove any onChange Listener 
+        self.databaseService.messages[message].signals[signal].updateListeners = []; //remove any onUpdate Listener
+
+        if (update) {
+            //determine if there is a changelistener
+            self.databaseService.messages[message].signals[signal].onUpdate(function (sig) {
+                callback(message, sig);
+            });
+        }
+        else {
+            //determine if there is an UpdateListener
+            /*if (self.databaseService.messages[message].signals[signal].updateListeners) {
+                console.log('Initializing to onChange!!!!' );
+                //self.databaseService.messages[message].signals[signal].updateListeners = []; //remove the onUpdate Listener   
+            }*/
+            self.databaseService.messages[message].signals[signal].onChange(function (sig) {
+                callback(message, sig);
+            });
+        }
+        //console.log(self.databaseService.messages[message].signals[signal]);              
     },
 
     /**
@@ -156,9 +173,17 @@ CanController.prototype = {
         }
 
         // create interval to send added message
-        var intervalId = setInterval(function() {
-            self.sendCanMessage(message);
-        }, self.refreshRate);
+
+        if (self.databaseService.messages[message].interval) { //interval is provided via kcd file
+            var intervalId = setInterval(function () {
+                self.sendCanMessage(message);
+            }, self.databaseService.messages[message].interval);
+        }
+        else {  //utilize the default 20 ms cycle rate           
+            var intervalId = setInterval(function () {
+                self.sendCanMessage(message);
+            }, self.refreshRate);
+        }
 
         self.retainedCanMessages.set(message, intervalId);
     },

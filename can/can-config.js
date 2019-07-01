@@ -87,20 +87,20 @@ module.exports = function(RED) {
             }
 
             var listeners = node.subscriptions[canNode.message][canNode.signal];
-            // if we have no listeners (this is the first), register the listener to the can controller
-            if (Object.keys(listeners).length === 0) {
+            // if we have no listeners (this is the first), register the listener to the can controller            
+            //if (Object.keys(listeners).length === 0) {
                 // register listener
-                node.log('Registering real listener for ' + canNode.message + ' ' + canNode.signal);
-                node.controller.registerListener(canNode.message, canNode.signal, function(message, signal) {
-                    // Go trough all listeners and send them updates
+                node.log('Registering real listener for ' + canNode.message + ' ' + canNode.signal);                
+                node.controller.registerListener(canNode.message, canNode.signal, canNode.onupdate, function(message, signal) {
+                    // Go through all listeners and send them updates
                     for (var childNodeId in node.subscriptions[message][signal.name]) {
                         var child = node.subscriptions[message][signal.name][childNodeId];
                         child.update(signal.value);
                     }
                 });
-            }
-
-            // Add this can node as a listener
+            //}                    
+            
+            // Add this can node as a listener                      
             node.subscriptions[canNode.message][canNode.signal][canNode.id] = canNode;
         };
 
@@ -110,7 +110,7 @@ module.exports = function(RED) {
                 return;
             }
             var name = canNode.name === '' ? canNode.id : canNode.name;
-            node.log('Removing ' + name + ' as lsitener.');
+            node.log('Removing ' + name + ' as listener.');
             delete node.subscriptions[canNode.message][canNode.signal][canNode.id];
         };
 
