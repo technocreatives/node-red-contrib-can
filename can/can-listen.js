@@ -7,6 +7,7 @@ module.exports = function(RED) {
         this.message = config.message;
         this.signal = config.signal;
         this.name = config.name;
+        this.onupdate = config.onupdate;
 
         var node = this;
 

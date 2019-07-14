@@ -50,9 +50,9 @@ module.exports = function(RED) {
                 text: 'Queried ' + actualMessage + ' - ' + actualSignal
             });
 
-            node.send({
-                payload: value
-            });
+            msg.payload = value
+
+            node.send(msg);
         });
 
         this.on('close', function(done) {
