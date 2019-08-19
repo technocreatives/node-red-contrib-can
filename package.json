@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-can",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "description": "Node RED Node interfacing with a CAN network.",
   "main": "index.js",
   "scripts": {
@@ -20,10 +20,14 @@
     "nodes": {
       "can-listen": "can/can-listen.js",
       "can-update": "can/can-update.js",
-	"can-config": "can/can-config.js",
-	"can-read": "can/can-read.js"
+      "can-config": "can/can-config.js",
+      "can-read": "can/can-read.js"
     }
   },
+  "contributors": [
+    "Bryan Nystrom <bnystrom@gmail.com> (https://github.com/bnystrom)",
+    "Jason D. Harper <jharper@anl.gov> (https://github.com/jayharper)"
+  ],
   "author": "magnus@technocreatives.com",
   "license": "MIT",
   "bugs": {
