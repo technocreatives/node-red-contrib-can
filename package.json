@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/technocreatives/node-red-contrib-can#readme",
   "dependencies": {
-    "socketcan": "2.2.2",
+    "socketcan": "2.8.0",
     "lodash": "latest",
     "hashmap": "latest"
   }
