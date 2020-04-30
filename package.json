@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-can",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Node RED Node interfacing with a CAN network.",
   "main": "index.js",
   "scripts": {
