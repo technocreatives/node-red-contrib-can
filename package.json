@@ -11,6 +11,7 @@
     "url": "git+https://github.com/technocreatives/node-red-contrib-can.git"
   },
   "keywords": [
+    "node-red",
     "can",
     "canbus",
     "car",
