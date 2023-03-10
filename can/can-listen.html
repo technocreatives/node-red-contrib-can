@@ -1,7 +1,7 @@
 <script type="text/javascript">
     RED.nodes.registerType('can-listen',{
-        category: 'input',
-        color: '#AACF11',
+        category: 'network',
+        color: '#76FF03',
         defaults: {
             can: {type:"can-config", required:true},
             message: {value:"", required:true},
@@ -20,7 +20,7 @@
 
 <script type="text/x-red" data-template-name="can-listen">
     <div class="form-row">
-        <label for="node-input-can"><i class="fa fa-plug"></i> Can</label>
+        <label for="node-input-can"><i class="fa fa-cog"></i> Config</label>
         <input type="text" id="node-input-can">
     </div>
     <div class="form-row">
@@ -32,7 +32,7 @@
         <input type="text" id="node-input-signal">
     </div>
     <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <label for="node-input-name"><i class="fa fa-font"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
     <div class="form-row">
@@ -44,4 +44,8 @@
 
 <script type="text/x-red" data-help-name="can-listen">
     <p>A Node where you select which signal from the kayak database you want to listen to. When there is a change in its value it will be sent out over the output, unless the on update check box is checked.  By selecting the 'Output on value update' checkbox the node will output the CAN signal everytime the message is sent over the CAN bus.</p>
+    <br/>
+    <p>The message name can be found in the .kcd database, It is preceeded by its ID</p>
+    <br/>
+    <p>The Signal name can be found within the message, note that the specified signal must be within the message otherwise this will not work</p>
 </script>

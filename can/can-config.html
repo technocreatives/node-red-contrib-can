@@ -1,9 +1,9 @@
 <script type="text/javascript">
-    RED.nodes.registerType('can-config',{
-        category: 'config',
+    RED.nodes.registerType("can-config",{
+        category: "config",
         defaults: {
             name: { value: "" },
-            socket: { value: 'vcan0', required: true },
+            socket: { value: "vcan0", required: true },
             bus: { value: "", required: true },
             dbFile: { value: "", required: true }
         },
@@ -30,4 +30,17 @@
         <label for="node-config-input-dbFile"><i class="fa fa-database"></i> Database</label>
         <input type="text" id="node-config-input-dbFile">
     </div>
+</script>
+
+<script type="text/x-red" data-help-name="can-config">
+    
+    <h2><b> Socket </b></h2>
+    <p>The socket is the network interface that you can find on your system, for linux users you can find the interface name using the following command : <b>ip a</b></p>
+
+    <h2><b> Bus </b></h2>
+    <p>The bus name can be found at the top of your .kcd database, to find it use a text editor to open your .kcd database, and at the top of your file you should see this tag : <b>&ltBus name="xxxxxxxx"&gt</b></p>
+
+    <h2><b> Database </b></h2> 
+    <p>Full path to your .kcd database, do not put brackets around the path</p>
+
 </script>
