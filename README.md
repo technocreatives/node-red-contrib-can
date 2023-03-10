@@ -2,6 +2,8 @@ node-red-contrib-can
 ==============================
 <a href="http://nodered.org" target="_new">Node-RED</a> node based on <a href="https://github.com/sebi2k1/node-can">socketcan</a> for reading a KCD file and handeling CAN-messages sent and received for this.
 
+_Note : This node doesn't provide RAW CAN messages, if you need RAW CAN messages, use this node instead : <a href="https://flows.nodered.org/node/node-red-contrib-socketcan">Node-red-contrib-socketcan</a>_
+
 Install
 -------
 Run the following command in your Node-RED user directory - typically `~/.node-red`

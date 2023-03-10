@@ -1,14 +1,10 @@
 {
   "name": "node-red-contrib-can",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Node RED Node interfacing with a CAN network.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/technocreatives/node-red-contrib-can.git"
   },
   "keywords": [
     "node-red",
@@ -27,7 +23,8 @@
   },
   "contributors": [
     "Bryan Nystrom <bnystrom@gmail.com> (https://github.com/bnystrom)",
-    "Jason D. Harper <jharper@anl.gov> (https://github.com/jayharper)"
+    "Jason D. Harper <jharper@anl.gov> (https://github.com/jayharper)",
+    "Itoh <kay1900zz@gmail.com> (https://github.com/Ithoh)"
   ],
   "author": "magnus@technocreatives.com",
   "license": "MIT",
@@ -36,8 +33,8 @@
   },
   "homepage": "https://github.com/technocreatives/node-red-contrib-can#readme",
   "dependencies": {
-    "socketcan": "2.8.0",
-    "lodash": "latest",
-    "hashmap": "latest"
+    "hashmap": "latest",
+    "lodash": "^4.17.21",
+    "socketcan": "3.0.0"
   }
 }
